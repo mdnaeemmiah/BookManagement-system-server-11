@@ -98,6 +98,14 @@ async function run() {
       res.send(result)
     })
 
+    // get all rooms for user
+    app.get('/listing-books/:email', async (req, res) => {
+      const email = req.params.email
+      let query = { 'host.email': email }
+      const result = await booksCollection.find(query).toArray()
+      res.send(result)
+    })
+
     // Save a book data in db
     app.post('/book', async (req, res) => {
       const bookData = req.body
@@ -105,6 +113,11 @@ async function run() {
       res.send(result)
     })
 
+    // get single data in db
+    // app.get('/book/:email',async (req,res) => {
+      
+    // })
+ 
 
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
