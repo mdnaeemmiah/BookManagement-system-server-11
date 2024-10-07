@@ -106,6 +106,14 @@ async function run() {
       res.send(result)
     })
 
+      // delete a book
+      app.delete('/book/:id', async (req, res) => {
+        const id = req.params.id
+        const query = { _id: new ObjectId(id) }
+        const result = await booksCollection.deleteOne(query)
+        res.send(result)
+      })
+
     // Save a book data in db
     app.post('/book', async (req, res) => {
       const bookData = req.body
@@ -131,9 +139,9 @@ async function run() {
 run().catch(console.dir)
 
 app.get('/', (req, res) => {
-  res.send('Hello from StayVista Server..')
+  res.send('Library management  Server..')
 })
 
 app.listen(port, () => {
-  console.log(`StayVista is running on port ${port}`)
+  console.log(`Library management is running on port ${port}`)
 })
