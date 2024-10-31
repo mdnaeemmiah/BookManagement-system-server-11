@@ -8,12 +8,16 @@ const jwt = require('jsonwebtoken')
 
 const port = process.env.PORT || 8000
 
+
 // middleware
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: ['http://localhost:5173', 'https://simple-firebase-e56ea.web.app','https://simple-firebase-e56ea.firebaseapp.com'],
   credentials: true,
   optionSuccessStatus: 200,
 }
+
+// simple-firebase
+
 app.use(cors(corsOptions))
 
 app.use(express.json())
@@ -79,6 +83,33 @@ async function run() {
     })
 
     const booksCollection = client.db('LibraryManagement').collection('books')
+    const usersCollection = client.db('LibraryManagement').collection('users')
+    const bookingsCollection = client.db('LibraryManagement').collection('booking')
+    
+    
+    // save a user data in db
+    app.put('/user', async (req, res) => {
+      const user = req.body
+      const query = { email: user?.email }
+       // check if user already exists in db
+      const isExist = await usersCollection.findOne(query)
+      if (isExist){
+        return res.send(isExist)
+      }
+      // save user for the first time
+      const options = { upsert: true }
+      const updateDoc = {
+        $set: {
+          ...user,
+          timestamp: Date.now(),
+        },
+      }
+      const result = await usersCollection.updateOne(query, updateDoc, options)
+     
+      res.send(result)
+    })
+
+
 
     // Get all books from db
     app.get('/books', async (req, res) => {
